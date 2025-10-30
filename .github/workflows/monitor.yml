@@ -3,7 +3,7 @@ name: Miner Monitor
 on:
   schedule:
     - cron: "*/10 * * * *"   # Runs every 10 minutes
-  workflow_dispatch:          # Allows manual triggering from Actions tab
+  workflow_dispatch:          # Allows manual triggering
 
 jobs:
   run-monitor:
@@ -26,12 +26,6 @@ jobs:
       - name: Run monitor script
         env:
           API_URL: ${{ secrets.API_URL }}
-          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
-          EMAIL_RECEIVER: ${{ secrets.EMAIL_RECEIVER }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python monitor.py
