@@ -97,7 +97,9 @@ def send_telegram_message(message):
 
 
 def main():
+    from datetime import datetime, timedelta, timezone
     try:
+        
         data = fetch_workers()
         offline = find_offline_workers(data)
         if offline:
@@ -105,7 +107,9 @@ def main():
             body = (
                 f"The following miners are offline:\n"
                 + "\n".join(offline)
-                + f"\n\nChecked at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                # + f"\n\nChecked at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                +f"\n\nChecked at {datetime.now(timezone(timedelta(hours=4))).strftime('%d/%m/%Y %H:%M:%S (UTC+4)')}"
+
             )
 
             # Send both Email and Telegram alerts
