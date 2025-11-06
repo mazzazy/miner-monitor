@@ -41,7 +41,7 @@ def find_offline_workers(data):
         #     offline.append(f"{name} (offline)")
         #     continue
         # Condition 1: status is OFFLINE
-        if status == "DEAD":
+        if status == "OFFLINE":
             offline.append(f"{name} (status=OFFLINE)")
             continue
 
