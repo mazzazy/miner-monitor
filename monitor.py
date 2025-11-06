@@ -37,8 +37,12 @@ def find_offline_workers(data):
         online = info.get("online", True)
 
         # Condition 1: explicitly offline
-        if not online:
-            offline.append(f"{name} (offline)")
+        # if not online:
+        #     offline.append(f"{name} (offline)")
+        #     continue
+        # Condition 1: status is OFFLINE
+        if status == "DEAD":
+            offline.append(f"{name} (status=OFFLINE)")
             continue
 
         # Condition 2: status is DEAD
