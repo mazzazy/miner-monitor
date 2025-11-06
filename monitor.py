@@ -46,9 +46,9 @@ def find_offline_workers(data):
             continue
 
         # Condition 2: status is DEAD
-        if status == "DEAD":
-            offline.append(f"{name} (status=DEAD)")
-            continue
+        # if status == "DEAD":
+        #     offline.append(f"{name} (status=DEAD)")
+        #     continue
 
         # Condition 3: zero hashrate or avg diff
         if hashrate == "0" or avg_diff == "0":
