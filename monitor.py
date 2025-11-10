@@ -51,9 +51,9 @@ def find_offline_workers(data):
         #     continue
 
         # Condition 3: zero hashrate or avg diff
-        if hashrate == "0" or avg_diff == "0":
-            offline.append(f"{name} (zero hashrate)")
-            continue
+        # if hashrate == "0" or avg_diff == "0":
+        #     offline.append(f"{name} (zero hashrate)")
+        #     continue
 
     return offline
 
