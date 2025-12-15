@@ -57,20 +57,41 @@ def detect_offline_miners(data):
     now = int(time.time())
 
     offline = []
+    low = []
     dead = []
 
     for worker_name, info in workers.items():
-        hash_5m = info.get("hash_rate_5m", 0)
+        state = info.get("state", "").lower()
+        hash_5m = info.get("hash_rate_5m", 0) or 0
+        hash_24h = info.get("hash_rate_24h", 0) or 0
         last_share = info.get("last_share", 0)
+
         last_seen = now - last_share
 
+        # DEAD (ignore)
         if hash_5m == 0 and last_seen > DEAD_THRESHOLD:
             dead.append(worker_name)
+            continue
 
-        elif hash_5m == 0 or last_seen > OFFLINE_THRESHOLD:
+        # OFFLINE (alert)
+        if hash_5m == 0 or last_seen > OFFLINE_THRESHOLD:
             offline.append(worker_name)
+            continue
 
-    return offline, dead
+        # LOW HASHRATE (alert)
+        if state == "low":
+            low.append(
+                f"{worker_name} (state=low)"
+            )
+            continue
+
+        if hash_24h > 0 and (hash_5m / hash_24h) < LOW_HASHRATE_RATIO:
+            low.append(
+                f"{worker_name} ({hash_5m:.0f} < {int(LOW_HASHRATE_RATIO*100)}% avg)"
+            )
+
+    return offline, low, dead
+
 
 
 # ==============================
@@ -78,28 +99,34 @@ def detect_offline_miners(data):
 # ==============================
 
 def main():
-    from datetime import datetime, timedelta, timezone
+     
     try:
+        from datetime import datetime, timedelta, timezone
         data = fetch_workers()
-        offline, dead = detect_offline_miners(data)
+        offline, low, dead = detect_offline_miners(data)
 
-        if offline:
-            message = (
-                f"⚠️ [{POOL_NAME}] Offline miners detected\n\n"
-                + "\n".join(offline)
-                +f"\n\nChecked at {datetime.now(timezone(timedelta(hours=4))).strftime('%d/%m/%Y %H:%M:%S (UTC+4)')}"
-            )
+        if offline or low:
+            message = f"⚠️ [{POOL_NAME}] Miner issues detected\n\n"
+
+            if offline:
+                message += "🚨 OFFLINE:\n" + "\n".join(offline) + "\n\n"
+
+            if low:
+                message += "⚠️ LOW HASHRATE:\n" + "\n".join(low) + "\n\n"
+
+            message += f"Checked at: {datetime.now(timezone(timedelta(hours=4))).strftime('%d/%m/%Y %H:%M:%S (UTC+4)')}"
+
             send_telegram_message(message)
             print("Telegram alert sent.")
-
         else:
-            print("All miners online.")
+            print("All miners operating normally.")
 
     except Exception as e:
-        send_telegram_message(
-            f"❌ [{POOL_NAME}] Monitor error:\n{str(e)}"
+        error_message = (
+            f"❌ [{POOL_NAME}] Monitor error\n\n"
+            f"{str(e)}\n\n"
+            f"Checked at: {datetime.now(timezone(timedelta(hours=4))).strftime('%d/%m/%Y %H:%M:%S (UTC+4)')}"
         )
+        send_telegram_message(error_message)
+        print("Error alert sent.")
 
-
-if __name__ == "__main__":
-    main()
