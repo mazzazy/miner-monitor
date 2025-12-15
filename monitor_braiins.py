@@ -85,7 +85,7 @@ def main():
         data = fetch_workers()
         offline, low = detect_problem_workers(data)
 
-        print(f"DEBUG offline={len(offline)}, low={len(low)}, dead={len(dead)}")
+        print(f"DEBUG offline={len(offline)}, low={len(low)}")
         if offline or low:
             message = f"⚠️ [{POOL_NAME}] Miner issues detected\n\n"
 
