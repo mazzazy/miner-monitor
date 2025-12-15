@@ -9,14 +9,17 @@ from datetime import datetime
 
 POOL_NAME = "Braiins Pool"
 
-API_URL = os.getenv("BRAIINS_API_URL")
-API_TOKEN = os.getenv("BRAIINS_API_TOKEN")
+API_URL = "https://pool.braiins.com/accounts/workers/json/btc"
+API_TOKEN = "EpkK4c1HNnTCjsKo"
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHAT_ID = os.getenv("CHAT_ID")
+BOT_TOKEN = "8317223306:AAElNK873qmWkEXmUmQIASmLt2aTUgmG-aw"
+CHAT_ID = "589954993"
 
-OFFLINE_THRESHOLD = 10 * 60      # 10 minutes
-DEAD_THRESHOLD = 24 * 60 * 60    # 24 hours
+
+
+OFFLINE_THRESHOLD = 600      # 10 minutes
+DEAD_THRESHOLD = 3600        # 1 hour
+LOW_HASHRATE_RATIO = 0.5
 
 
 # ==============================
@@ -48,49 +51,26 @@ def fetch_workers():
     return response.json()
 
 
-# ==============================
-# Detect Offline Miners
-# ==============================
 
-def detect_offline_miners(data):
-    workers = data["btc"]["workers"]
-    now = int(time.time())
+
+def detect_problem_workers(data):
+    workers = data.get("btc", {}).get("workers", {})
+    print(f"DEBUG: found {len(workers)} workers")
 
     offline = []
     low = []
-    dead = []
 
-    for worker_name, info in workers.items():
+    for name, info in workers.items():
         state = info.get("state", "").lower()
-        hash_5m = info.get("hash_rate_5m", 0) or 0
-        hash_24h = info.get("hash_rate_24h", 0) or 0
-        last_share = info.get("last_share", 0)
 
-        last_seen = now - last_share
+        if state == "off":
+            offline.append(name)
+        elif state == "low":
+            low.append(name)
 
-        # DEAD (ignore)
-        if hash_5m == 0 and last_seen > DEAD_THRESHOLD:
-            dead.append(worker_name)
-            continue
+    print(f"DEBUG offline={len(offline)}, low={len(low)}")
+    return offline, low
 
-        # OFFLINE (alert)
-        if hash_5m == 0 or last_seen > OFFLINE_THRESHOLD:
-            offline.append(worker_name)
-            continue
-
-        # LOW HASHRATE (alert)
-        if state == "low":
-            low.append(
-                f"{worker_name} (state=low)"
-            )
-            continue
-
-        if hash_24h > 0 and (hash_5m / hash_24h) < LOW_HASHRATE_RATIO:
-            low.append(
-                f"{worker_name} ({hash_5m:.0f} < {int(LOW_HASHRATE_RATIO*100)}% avg)"
-            )
-
-    return offline, low, dead
 
 
 
@@ -103,8 +83,9 @@ def main():
     try:
         from datetime import datetime, timedelta, timezone
         data = fetch_workers()
-        offline, low, dead = detect_offline_miners(data)
+        offline, low = detect_problem_workers(data)
 
+        print(f"DEBUG offline={len(offline)}, low={len(low)}, dead={len(dead)}")
         if offline or low:
             message = f"⚠️ [{POOL_NAME}] Miner issues detected\n\n"
 
@@ -129,4 +110,8 @@ def main():
         )
         send_telegram_message(error_message)
         print("Error alert sent.")
+
+if __name__ == "__main__":
+    print("DEBUG: script started")
+    main()
 
