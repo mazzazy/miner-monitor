@@ -2,7 +2,8 @@ name: Braiins Pool Monitor
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+     # Run every 30 minutes to stay within free GitHub Actions quota
+    - cron: "*/30 * * * *"
   workflow_dispatch:
 
 jobs:
