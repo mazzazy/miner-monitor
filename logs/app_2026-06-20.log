@@ -40,3 +40,11 @@
 2026-06-20 19:00:00 | INFO | Monitor | Detected 0 alert(s), 0 recovery(ies)
 2026-06-20 19:00:00 | INFO | Monitor | No state changes detected
 2026-06-20 19:00:00 | INFO | Monitor | History updated
+2026-06-20 23:44:57 | INFO | Monitor | Monitor started
+2026-06-20 23:44:57 | INFO | Monitor | API attempt 1
+2026-06-20 23:44:58 | INFO | Monitor | Workers found: 38
+2026-06-20 23:44:58 | INFO | Monitor | Detected 1 alert(s), 0 recovery(ies)
+2026-06-20 23:44:58 | INFO | NotificationService | Sending notification
+2026-06-20 23:45:19 | INFO | NotificationService | Telegram notification sent
+2026-06-20 23:45:19 | INFO | Monitor | Telegram notification sent
+2026-06-20 23:45:19 | INFO | Monitor | History updated
