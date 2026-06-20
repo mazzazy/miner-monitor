@@ -2,8 +2,8 @@ name: Miner Monitor
 
 on:
   schedule:
-    # Run every 30 minutes to stay within free GitHub Actions quota
-    - cron: "*/30 * * * *"   # Runs every 10 minutes
+    # Run every 60 minutes to stay within free GitHub Actions quota
+    - cron: "0 * * * *"   # Runs every 60 minutes
   workflow_dispatch:          # Allows manual triggering
 
 jobs:

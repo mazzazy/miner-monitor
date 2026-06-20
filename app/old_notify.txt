@@ -1,0 +1,76 @@
+        sections = []
+
+        # -----------------------------
+        # EMERGENCY
+        # -----------------------------
+        if summary.get("emergency"):
+            self.logger.warning(f"Emergency alerts: {len(summary['emergency'])}")
+
+            sections.append("🚨 EMERGENCY")
+
+            for a in summary["emergency"]:
+                line = f"• {a.message}"
+                sections.append(line)
+                self.logger.warning(line)
+
+        # -----------------------------
+        # CRITICAL
+        # -----------------------------
+        if summary.get("critical"):
+            self.logger.warning(f"Critical alerts: {len(summary['critical'])}")
+
+            sections.append("\n🔴 CRITICAL")
+
+            for a in summary["critical"]:
+                line = f"• {a.message}"
+                sections.append(line)
+                self.logger.warning(line)
+
+        # -----------------------------
+        # WARNING
+        # -----------------------------
+        if summary.get("warning"):
+            self.logger.info(f"Warning alerts: {len(summary['warning'])}")
+
+            sections.append("\n⚠️ WARNING")
+
+            for a in summary["warning"]:
+                line = f"• {a.message}"
+                sections.append(line)
+                self.logger.info(line)
+
+        # -----------------------------
+        # RECOVERIES
+        # -----------------------------
+        if summary.get("recoveries"):
+            self.logger.info(f"Recoveries: {len(summary['recoveries'])}")
+
+            sections.append("\n🟢 RECOVERED")
+
+            for r in summary["recoveries"]:
+                line = f"• {r.message}"
+                sections.append(line)
+                self.logger.info(line)
+
+        # -----------------------------
+        # HEALTH SUMMARY
+        # -----------------------------
+        health_line = (
+            f"Healthy: {summary['healthy']}/{summary['total']} | "
+            f"Offline: {summary['offline']} | "
+            f"Low: {summary['low']} | "
+            f"Availability: {summary['availability']:.1f}%"
+        )
+
+        sections.append("\n📊 FARM STATUS")
+        sections.append(health_line)
+
+        self.logger.info(health_line)
+
+        # -----------------------------
+        # SEND MESSAGE
+        # -----------------------------
+        message = "\n".join(sections)
+
+        self.notifier.send(message)
+        self.logger.info("Telegram notification sent")

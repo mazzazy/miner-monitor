@@ -2,11 +2,15 @@ import os
 import time
 import requests
 from datetime import datetime
+from app.services.history import save_snapshot
+import json
+from pathlib import Path
 
 # ==============================
 # Configuration
 # ==============================
 
+STATE_FILE = Path("last_state.json")
 POOL_NAME = "Braiins Pool"
 
 API_URL = "https://pool.braiins.com/accounts/workers/json/btc"
@@ -72,42 +76,76 @@ def detect_problem_workers(data):
     return offline, low
 
 
+def load_state():
+    if STATE_FILE.exists():
+        with open(STATE_FILE, "r") as f:
+            return json.load(f)
+    return {}
 
+def save_state(state):
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f, indent=2)
+
+def get_worker_state(info):
+    state = info.get("state", "").lower()
+    last_share = int(info.get("last_share", 0))
+    hash_5m = float(info.get("hash_rate_5m", 0) or 0)
+
+    now = int(time.time())
+    last_seen = now - last_share
+
+    if state == "off" or hash_5m == 0:
+        return "off"
+
+    if state == "low":
+        return "low"
+
+    return "ok"
 
 # ==============================
 # Main
 # ==============================
 
 def main():
-     
     try:
-        from datetime import datetime, timedelta, timezone
+        print("DEBUG: script started")
+
         data = fetch_workers()
-        offline, low = detect_problem_workers(data)
+        workers = data.get("btc", {}).get("workers", {})
 
-        print(f"DEBUG offline={len(offline)}, low={len(low)}")
-        if offline or low:
-            message = f"⚠️ [{POOL_NAME}] Miner issues detected\n\n"
+        previous_state = load_state()
+        current_state = {}
 
-            if offline:
-                message += "🚨 OFFLINE:\n" + "\n".join(offline) + "\n\n"
+        changes = []
 
-            if low:
-                message += "⚠️ LOW HASHRATE:\n" + "\n".join(low) + "\n\n"
+        for name, info in workers.items():
+            new_state = get_worker_state(info)
+            current_state[name] = new_state
 
-            message += f"Checked at: {datetime.now(timezone(timedelta(hours=4))).strftime('%d/%m/%Y %H:%M:%S (UTC+4)')}"
+            old_state = previous_state.get(name)
+
+            # Trigger alert ONLY on change
+            if old_state != new_state:
+                changes.append((name, old_state, new_state))
+
+        if changes:
+            message = f"⚠️ [{POOL_NAME}] State Change Detected\n\n"
+
+            for name, old, new in changes:
+                message += f"{name}: {old} → {new}\n"
+
+            message += f"\nChecked at: {datetime.now()}"
 
             send_telegram_message(message)
             print("Telegram alert sent.")
         else:
-            print("All miners operating normally.")
+            print("No state changes.")
+
+        # Save snapshot for next run
+        save_state(current_state)
 
     except Exception as e:
-        error_message = (
-            f"❌ [{POOL_NAME}] Monitor error\n\n"
-            f"{str(e)}\n\n"
-            f"Checked at: {datetime.now(timezone(timedelta(hours=4))).strftime('%d/%m/%Y %H:%M:%S (UTC+4)')}"
-        )
+        error_message = f"❌ Monitor error:\n{str(e)}"
         send_telegram_message(error_message)
         print("Error alert sent.")
 

@@ -2,13 +2,20 @@ name: Braiins Pool Monitor
 
 on:
   schedule:
-     # Run every 30 minutes to stay within free GitHub Actions quota
-    - cron: "*/30 * * * *"
+    # Run every hour (optimized for free tier)
+    - cron: "0 * * * *"
+
   workflow_dispatch:
+
+concurrency:
+  group: braiins-monitor
+  cancel-in-progress: true
 
 jobs:
   monitor:
     runs-on: ubuntu-latest
+
+    timeout-minutes: 5
 
     steps:
       - name: Checkout repo
@@ -20,7 +27,12 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv pandas
+
+      - name: Restore state
+        run: git pull origin main
 
       - name: Run Braiins Monitor
         env:
@@ -28,4 +40,13 @@ jobs:
           BRAIINS_API_TOKEN: ${{ secrets.BRAIINS_API_TOKEN }}
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
-        run: python monitor_braiins.py
+          POOL_NAME: "Braiins Pool"
+        run: python run.py
+
+      - name: Commit state
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/
+          git commit -m "Update monitoring state [skip ci]" || exit 0
+          git push
