@@ -1,9 +1,1 @@
-{
-  "BITCITY009.34": {
-    "worker": "BITCITY009.34",
-    "state": "low",
-    "severity": "warning",
-    "first_seen": "2026-07-03T19:04:10.584182",
-    "last_seen": "2026-07-03T19:04:10.584182"
-  }
-}
+{}
