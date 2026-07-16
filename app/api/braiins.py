@@ -8,7 +8,13 @@ class BraiinsAPI:
     def __init__(self, url: str, token: str,logger=None):
         self.url = url
         self.token = token
-        self.logger = logger
+        
+        # ✅ FIX: safe logger fallback
+        if logger is None:
+            import logging
+            self.logger = logging.getLogger("BraiinsAPI")
+        else:
+            self.logger = logger
 
         self.session = requests.Session()
         self.session.headers.update({
@@ -29,7 +35,8 @@ class BraiinsAPI:
 
             try:
                 # print(f"🌐 API call attempt {attempt}")
-                self.logger.info(f"API attempt {attempt}")
+                if self.logger:
+                    self.logger.info(f"API attempt {attempt}")
 
                 response = self.session.get(
                     self.url,
@@ -59,17 +66,20 @@ class BraiinsAPI:
             except (requests.Timeout, requests.ConnectionError) as e:
                 last_error = e
                 # print(f"⛔ Network error: {e}")
-                self.logger.info(f"Network error: {e}")
+                if self.logger:
+                    self.logger.info(f"Network error: {e}")
 
             except Exception as e:
                 last_error = e
                 # print(f"⚠ API error: {e}")
-                self.logger.info(f"API error: {e}")
+                if self.logger:
+                    self.logger.info(f"API error: {e}")
 
             # exponential backoff
             sleep_time = self.base_delay * (2 ** (attempt - 1))
             print(f"⏳ retrying in {sleep_time}s...")
-            self.logger.info(f"retrying in {sleep_time}s...")
+            if self.logger:
+                self.logger.info(f"retrying in {sleep_time}s...")
             time.sleep(sleep_time)
 
         # if all retries fail

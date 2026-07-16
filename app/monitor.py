@@ -14,6 +14,7 @@ from app.models.alert import Alert
 from datetime import date
 from app.services.incident_manager import IncidentManager
 from app.services.message_formatter import MessageFormatter
+from app.services.uptime_engine import UptimeEngine
 
 
 class Monitor:
@@ -28,17 +29,20 @@ class Monitor:
         self.report_generator = ReportGenerator()
         self.report_state = ReportState()
         self.logger = LoggerFactory.get_logger("Monitor")
-        self.api = BraiinsAPI(Config.BRAIINS_API_URL, Config.BRAIINS_API_TOKEN, self.logger)
+        self.api = BraiinsAPI(
+            Config.BRAIINS_API_URL,
+            Config.BRAIINS_API_TOKEN,
+            self.logger
+        )
         self.alert_engine = AlertEngine()
         self.incidents = IncidentManager()
         self.formatter = MessageFormatter()
+        self.uptime_engine = UptimeEngine()
 
     def _is_daily_time(self):
         from datetime import datetime
 
         now = datetime.now()
-
-        # 08:00 - 08:05 window
         return now.hour == 8 and now.minute < 5
     
     def _format_alert(self, alert):
@@ -56,11 +60,9 @@ class Monitor:
         except Exception as e:
             self.notification.send(f"❌ Braiins API Failure\n\n{str(e)}")
             self.logger.info("API failed, alert sent")
-            #print("API failed, alert sent")
             return
 
         workers_raw = data.get("btc", {}).get("workers", {})
-        
 
         # 2. Normalize state
         current_state = {
@@ -68,8 +70,15 @@ class Monitor:
             for name, info in workers_raw.items()
         }
 
-        # print(f"📡 Workers found: {len(current_state)}")
         self.logger.info(f"Workers found: {len(current_state)}")
+
+        # ======================================================
+        # ✅ NEW STEP — UPTIME ENGINE INTEGRATION
+        # ======================================================
+        try:
+            self.uptime_engine.record(current_state)
+        except Exception as e:
+            self.logger.info(f"Uptime engine failed: {str(e)}")
 
         # 3. Load previous state
         previous_state = self.storage.load()
@@ -80,28 +89,30 @@ class Monitor:
             previous_state,
             current_state
         )
+
         filtered_alerts = []
-        #####################################
         for alert in alerts:
             key = f"{alert.worker}:{alert.state}"
             if self.cooldown.should_alert(key):
                 filtered_alerts.append(alert)
+
         alerts = filtered_alerts
-                # Register incidents
+
+        # Register incidents
         for alert in alerts:
             incident = self.incidents.register(
-            incidents,
-            alert
+                incidents,
+                alert
             )
-            # Keep the alert severity synchronized with the incident
+
             alert.severity = incident.severity
-            # Enhance the alert message with incident duration
+
             alert.message = (
                 f"{alert.worker} — {alert.state.upper()}\n"
                 f"🕒 Started: {incident.first_seen.strftime('%H:%M')}\n"
                 f"⏱ Duration: {self.incidents.duration(incident)}"
-                
             )
+
         # Resolve incidents
         for recovery in recoveries:
             incident = self.incidents.resolve(
@@ -110,34 +121,18 @@ class Monitor:
             )
             if incident:
                 recovery.message = (
-                f"{recovery.worker}\n"
-                f"Recovered after {self.incidents.duration(incident)}"
+                    f"{recovery.worker}\n"
+                    f"Recovered after {self.incidents.duration(incident)}"
                 )
-        # summary = self.alert_engine.build(
-        #     alerts,
-        #     recoveries,
-        #     current_state
-        # )  
 
-
-
-                
-
-        # print(f"⚠️ alerts={len(alerts)}, recoveries={len(recoveries)}")
-        
         self.logger.info(
             "Detected %d alert(s), %d recovery(ies)",
             len(alerts),
             len(recoveries)
         )
 
-
         # ==========================================================
-        # 5. Notify
-        # ==========================================================
-
-        # ==========================================================
-        # 5. NOTIFY (SMART TELEGRAM FORMATTER + LOGGING)
+        # 5. NOTIFY
         # ==========================================================
 
         summary = self.alert_engine.build(
@@ -145,6 +140,7 @@ class Monitor:
             recoveries,
             current_state
         )
+
         if alerts or recoveries:
 
             message = self.formatter.build_notification(summary)
@@ -157,29 +153,29 @@ class Monitor:
 
             self.logger.info("No state changes detected")
 
-
-
         # 6. Save state
         self.storage.save(current_state)
         self.incidents.save(incidents)
 
         self.history.append_snapshot(workers_raw)
 
-        # print("💾 History updated")
         self.logger.info("History updated")
 
         # ----------------------------
-        # DAILY REPORT TRIGGER
+        # DAILY REPORT
         # ----------------------------
         if self._is_daily_time():
+
             today = self._today()
 
-            # prevent duplicates
             if not self.report_state.is_daily_report_sent(today):
+
                 report = self.report_generator.generate_daily_statistics()
                 self.reporter.send_daily_report(report)
                 self.report_state.mark_daily_report_sent(today)
-                print("📨 Daily report sent (first run today)")
-            else:
-                print("⏭ Daily report already sent today")
 
+                self.logger.info("Daily report sent")
+
+            else:
+
+                self.logger.info("Daily report already sent today")
