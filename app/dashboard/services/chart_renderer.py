@@ -6,7 +6,7 @@ from datetime import datetime
 class ChartRenderer:
 
     @staticmethod
-    def plot_hashrate_with_incident_bands(df, incidents_df, title, column):
+    def plot_hashrate_with_incident_bands(df, incident, title, column):
 
         fig = go.Figure()
 
@@ -25,29 +25,27 @@ class ChartRenderer:
         # -----------------------
         # 2. Incident time bands
         # -----------------------
-        if incidents_df is not None and not incidents_df.empty:
+        if incident:
 
-            for _, inc in incidents_df.iterrows():
-
-                state = str(inc.get("State", "")).lower()
-                start = inc.get("First Seen")
-                end = inc.get("Resolved At")
-
-                if pd.isna(start):
-                    continue
-
+            state = str(
+                incident.get("state", "")).lower()
+            start = incident.get("first_seen")
+            # If no start time, skip shading
+            if start:
                 # If still open → extend to now
-                if pd.isna(end):
-                    end = datetime.now()
+                end = incident.get(
+                "resolved_at")
 
+                if not end:
+                    end = datetime.now()
                 # Choose color
                 if state == "off":
-                    color = "rgba(255,0,0,0.25)"   # red transparent
+                    color = "rgba(255,0,0,0.25)"  # red
                 elif state == "low":
-                    color = "rgba(255,165,0,0.20)" # orange transparent
+                    color = "rgba(255,165,0,0.20)"  # orange
                 else:
-                    color = "rgba(0,255,0,0.15)"   # green
-
+                    color = "rgba(0,255,0,0.15)"   # green 
+                
                 fig.add_vrect(
                     x0=start,
                     x1=end,
@@ -55,7 +53,11 @@ class ChartRenderer:
                     opacity=0.4,
                     layer="below",
                     line_width=0,
-                )
+                    annotation_text=state.upper(),
+                    annotation_position="top left"
+                )             
+
+
 
         # -----------------------
         # 3. Layout

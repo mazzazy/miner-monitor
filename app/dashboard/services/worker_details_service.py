@@ -91,5 +91,7 @@ class WorkerDetailsService:
     def get_current_incident(self, worker_name):
 
         incidents = self.dashboard.load_incidents()
+        if worker_name not in incidents:
+            return None
 
         return incidents.get(worker_name)
