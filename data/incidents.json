@@ -5,5 +5,12 @@
     "severity": "critical",
     "first_seen": "2026-07-20T12:09:55.263786",
     "last_seen": "2026-07-20T12:09:55.263786"
+  },
+  "BITCITY009.18": {
+    "worker": "BITCITY009.18",
+    "state": "low",
+    "severity": "warning",
+    "first_seen": "2026-07-29T20:13:44.567823",
+    "last_seen": "2026-07-29T20:13:44.567823"
   }
 }
