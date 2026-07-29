@@ -5,26 +5,5 @@
     "severity": "critical",
     "first_seen": "2026-07-20T12:09:55.263786",
     "last_seen": "2026-07-20T12:09:55.263786"
-  },
-  "BITCITY009.08": {
-    "worker": "BITCITY009.08",
-    "state": "low",
-    "severity": "warning",
-    "first_seen": "2026-07-29T21:51:42.476429",
-    "last_seen": "2026-07-29T21:51:42.476429"
-  },
-  "BITCITY009.16": {
-    "worker": "BITCITY009.16",
-    "state": "low",
-    "severity": "warning",
-    "first_seen": "2026-07-29T21:51:42.476461",
-    "last_seen": "2026-07-29T21:51:42.476461"
-  },
-  "BITCITY009.20": {
-    "worker": "BITCITY009.20",
-    "state": "low",
-    "severity": "warning",
-    "first_seen": "2026-07-29T21:51:42.476468",
-    "last_seen": "2026-07-29T21:51:42.476468"
   }
 }
