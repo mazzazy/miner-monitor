@@ -8,10 +8,10 @@
   },
   "BITCITY009.08": {
     "worker": "BITCITY009.08",
-    "state": "low",
-    "severity": "warning",
+    "state": "off",
+    "severity": "critical",
     "first_seen": "2026-08-08T14:23:19.237299",
-    "last_seen": "2026-08-08T14:23:19.237299"
+    "last_seen": "2026-08-08T15:20:41.514080"
   },
   "BITCITY009.10": {
     "worker": "BITCITY009.10",
@@ -22,10 +22,10 @@
   },
   "BITCITY009.12": {
     "worker": "BITCITY009.12",
-    "state": "low",
-    "severity": "warning",
+    "state": "off",
+    "severity": "critical",
     "first_seen": "2026-08-08T14:23:19.237310",
-    "last_seen": "2026-08-08T14:23:19.237310"
+    "last_seen": "2026-08-08T15:20:41.514098"
   },
   "BITCITY009.14": {
     "worker": "BITCITY009.14",
@@ -43,16 +43,219 @@
   },
   "BITCITY009.27": {
     "worker": "BITCITY009.27",
-    "state": "low",
-    "severity": "warning",
+    "state": "off",
+    "severity": "critical",
     "first_seen": "2026-08-08T14:23:19.237323",
-    "last_seen": "2026-08-08T14:23:19.237323"
+    "last_seen": "2026-08-08T15:20:41.514158"
   },
   "BITCITY009.31": {
     "worker": "BITCITY009.31",
-    "state": "low",
-    "severity": "warning",
+    "state": "off",
+    "severity": "critical",
     "first_seen": "2026-08-08T14:23:19.237328",
-    "last_seen": "2026-08-08T14:23:19.237328"
+    "last_seen": "2026-08-08T15:20:41.514174"
+  },
+  "BITCITY009.01": {
+    "worker": "BITCITY009.01",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514026",
+    "last_seen": "2026-08-08T15:20:41.514026"
+  },
+  "BITCITY009.02": {
+    "worker": "BITCITY009.02",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514054",
+    "last_seen": "2026-08-08T15:20:41.514054"
+  },
+  "BITCITY009.03": {
+    "worker": "BITCITY009.03",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514061",
+    "last_seen": "2026-08-08T15:20:41.514061"
+  },
+  "BITCITY009.04": {
+    "worker": "BITCITY009.04",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514066",
+    "last_seen": "2026-08-08T15:20:41.514066"
+  },
+  "BITCITY009.06": {
+    "worker": "BITCITY009.06",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514071",
+    "last_seen": "2026-08-08T15:20:41.514071"
+  },
+  "BITCITY009.07": {
+    "worker": "BITCITY009.07",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514075",
+    "last_seen": "2026-08-08T15:20:41.514075"
+  },
+  "BITCITY009.09": {
+    "worker": "BITCITY009.09",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514092",
+    "last_seen": "2026-08-08T15:20:41.514092"
+  },
+  "BITCITY009.13": {
+    "worker": "BITCITY009.13",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514109",
+    "last_seen": "2026-08-08T15:20:41.514109"
+  },
+  "BITCITY009.15": {
+    "worker": "BITCITY009.15",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514114",
+    "last_seen": "2026-08-08T15:20:41.514114"
+  },
+  "BITCITY009.16": {
+    "worker": "BITCITY009.16",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514119",
+    "last_seen": "2026-08-08T15:20:41.514119"
+  },
+  "BITCITY009.17": {
+    "worker": "BITCITY009.17",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514123",
+    "last_seen": "2026-08-08T15:20:41.514123"
+  },
+  "BITCITY009.18": {
+    "worker": "BITCITY009.18",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514127",
+    "last_seen": "2026-08-08T15:20:41.514127"
+  },
+  "BITCITY009.19": {
+    "worker": "BITCITY009.19",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514131",
+    "last_seen": "2026-08-08T15:20:41.514131"
+  },
+  "BITCITY009.20": {
+    "worker": "BITCITY009.20",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514134",
+    "last_seen": "2026-08-08T15:20:41.514134"
+  },
+  "BITCITY009.22": {
+    "worker": "BITCITY009.22",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514139",
+    "last_seen": "2026-08-08T15:20:41.514139"
+  },
+  "BITCITY009.23": {
+    "worker": "BITCITY009.23",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514142",
+    "last_seen": "2026-08-08T15:20:41.514142"
+  },
+  "BITCITY009.24": {
+    "worker": "BITCITY009.24",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514146",
+    "last_seen": "2026-08-08T15:20:41.514146"
+  },
+  "BITCITY009.25": {
+    "worker": "BITCITY009.25",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514150",
+    "last_seen": "2026-08-08T15:20:41.514150"
+  },
+  "BITCITY009.26": {
+    "worker": "BITCITY009.26",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514154",
+    "last_seen": "2026-08-08T15:20:41.514154"
+  },
+  "BITCITY009.28": {
+    "worker": "BITCITY009.28",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514163",
+    "last_seen": "2026-08-08T15:20:41.514163"
+  },
+  "BITCITY009.29": {
+    "worker": "BITCITY009.29",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514167",
+    "last_seen": "2026-08-08T15:20:41.514167"
+  },
+  "BITCITY009.30": {
+    "worker": "BITCITY009.30",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514171",
+    "last_seen": "2026-08-08T15:20:41.514171"
+  },
+  "BITCITY009.32": {
+    "worker": "BITCITY009.32",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514179",
+    "last_seen": "2026-08-08T15:20:41.514179"
+  },
+  "BITCITY009.33": {
+    "worker": "BITCITY009.33",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514183",
+    "last_seen": "2026-08-08T15:20:41.514183"
+  },
+  "BITCITY009.34": {
+    "worker": "BITCITY009.34",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514187",
+    "last_seen": "2026-08-08T15:20:41.514187"
+  },
+  "BITCITY009.35": {
+    "worker": "BITCITY009.35",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514190",
+    "last_seen": "2026-08-08T15:20:41.514190"
+  },
+  "BITCITY009.36": {
+    "worker": "BITCITY009.36",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514194",
+    "last_seen": "2026-08-08T15:20:41.514194"
+  },
+  "BITCITY009.37": {
+    "worker": "BITCITY009.37",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514198",
+    "last_seen": "2026-08-08T15:20:41.514198"
+  },
+  "BITCITY009.38": {
+    "worker": "BITCITY009.38",
+    "state": "off",
+    "severity": "critical",
+    "first_seen": "2026-08-08T15:20:41.514201",
+    "last_seen": "2026-08-08T15:20:41.514201"
   }
 }
